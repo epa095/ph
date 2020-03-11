@@ -213,16 +213,24 @@ def plot(*args, **kwargs):
         import matplotlib.pyplot as plt
     except ImportError:
         exit("plot depends on matplotlib, install ph[plot]")
+    pd.set_option("plotting.backend", "pandas_bokeh")
 
     df = pipein()
     index = kwargs.get("index")
     if index is not None:
         df = df.set_index(index)
+        try:
+            df.index = pd.to_datetime(df.index)
+            print(df.index)
+        except:
+            pass
     df.plot(
+        figsize=(1910, 1070),
         kind=kwargs.get("kind", "line"),  # default pandas plot is line
-        style=kwargs.get("style"),
         x=kwargs.get("x"),
         y=kwargs.get("y"),
+        hovertool=True,
+        rangetool=True,
     )
     plt.show()
     pipeout(df)
